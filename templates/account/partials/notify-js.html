@@ -1,0 +1,31 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mouse0270-bootstrap-notify/3.1.5/bootstrap-notify.min.js"></script>
+<script>
+    function showNotification(message, title = "", type = "info", icon = "") {
+        if (type === "error") {
+            type = "danger"
+            icon = "fa fa-exclamation-circle"
+        }
+        if (type === "success") {
+            icon = "fa fa-check-circle"
+        }
+        console.log(message, type, icon)
+        $.notify({
+            title: `<strong style="margin-left:10px">${title}</strong>`,
+            icon: icon,
+            message: message
+        }, {
+            type: type,
+            animate: {
+                enter: 'animated fadeInDown',
+                exit: 'animated fadeOutRight'
+            },
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            offset: 10,
+            spacing: 10,
+            z_index: 1031,
+        });
+    }
+</script>

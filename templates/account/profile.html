@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra-css %}
+    <link href="{% static 'assets/css/now-ui-dashboard.css' %}" rel="stylesheet"/>
+{% endblock %}
+{% block main-content %}
+    {% if edit %}
+        <div class="row">
+            <div class="col-md-8">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="title">Edit Profile
+                                <span class="text-primary">{{ user }}</span><br>
+                                <hr>
+                                <span class="text-secondary">{{ user.userprofile.cnic }}</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% include 'account/partials/form.html' with form=userprofile_form %}
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <form method="post" enctype="multipart/form-data" action="{% url 'accounts-userprofile-image' %}">
+                    {% csrf_token %}
+                    <div class="card card-user">
+                        <div class="image">
+                            <img src="{% static 'assets/img/home-decor-1.jpg' %}" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <div class="author" style="display: block">
+                                <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                                    <div class="fileinput-new thumbnail img-circle">
+                                        <img src="{{ user.userprofile.image.url }}" alt="...">
+                                    </div>
+                                    <div class="fileinput-preview fileinput-exists thumbnail img-circle"></div>
+                                    <div>
+                            <span class="btn btn-round btn-primary btn-file">
+                              <span class="fileinput-new">Update Photo</span>
+                              <span class="fileinput-exists">Change</span>
+                              <input type="file" accept="image/*" name="image" id="id_image"/></span>
+                                        <br/>
+                                        <a href="#pablo" class="btn btn-danger btn-round fileinput-exists"
+                                           data-dismiss="fileinput"><i class="fa fa-times"></i> Cancel</a>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <hr>
+                        <div class="button-container">
+                            <button disabled id="image_btn" type="submit" class="btn btn-primary">
+                                Save
+                                {#                                                        <i class="fa fa-check"></i>#}
+                            </button>
+
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-md-8">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="title">Profile
+                                <span class="text-primary">{{ user }}</span><br>
+                                <hr>
+                                <span class="text-secondary">{{ user.userprofile.cnic }}</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% include 'account/partials/form.html' with form=userprofile_form %}
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-primary" href="{% url 'accounts-userprofile-edit-profile' %}">Edit
+                                Profile</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <form method="post" enctype="multipart/form-data" action="{% url 'accounts-userprofile-image' %}">
+                    {% csrf_token %}
+                    <div class="card card-user">
+                        <div class="image">
+                            <img src="{% static 'assets/img/home-decor-1.jpg' %}" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <div class="author" style="display: block">
+                                <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                                    <div class="fileinput-new thumbnail img-circle">
+                                        <img src="{{ user.userprofile.image.url }}" alt="...">
+                                    </div>
+                                    <div class="fileinput-preview fileinput-exists thumbnail img-circle"></div>
+                                    {#                                    <div>#}
+                                    {#                            <span class="btn btn-round btn-primary btn-file">#}
+                                    {#                              <span class="fileinput-new">Update Photo</span>#}
+                                    {#                              <span class="fileinput-exists">Change</span>#}
+                                    {#                              <input type="file" accept="image/*" name="image" id="id_image"/></span>#}
+                                    {#                                        <br/>#}
+                                    {#                                        <a href="#pablo" class="btn btn-danger btn-round fileinput-exists"#}
+                                    {#                                           data-dismiss="fileinput"><i class="fa fa-times"></i> Cancel</a>#}
+                                    {#                                    </div>#}
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <hr>
+                        <div class="button-container">
+                            <button disabled id="image_btn" type="submit" class="btn btn-primary">
+                                Save
+                                {#                                                        <i class="fa fa-check"></i>#}
+                            </button>
+
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    {% endif %}
+
+
+{% endblock %}
+
+{% block extra-js %}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")
+            </script>
+        {% endfor %}
+    {% endif %}
+    <script>
+        $("#id_image").on("change", function () {
+            if (this.files.length > 0) {
+                $("#image_btn").removeAttr("disabled")
+            } else {
+                $("#image_btn").attr("disabled", "")
+            }
+        })
+
+    </script>
+
+{% endblock %}
+

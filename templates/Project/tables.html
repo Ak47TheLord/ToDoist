@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load django_tables2 %}
+{% load static %}
+
+{% block extra-css %}{% endblock %}
+{% block main-content %}
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card my-4">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                        <div class=" row bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                            <div class="col-md-6"><h6 class="text-white text-capitalize ps-3">{{ title }}</h6></div>
+                            <div class="col-md-6" style="text-align: end">
+                                {% for action in actions %}
+                                    <a href="{{ action.href }}" class="{{ action.classes }}">
+                                        <i class="{{ action.icon }}"></i>
+                                        {{ action.title }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body px-0 pb-2">
+                        <div class="card-body">
+                            {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra-js %}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                showNotification("", "{{message}}", "{{ message.tags }}", "fa fa-check")
+            </script>
+        {% endfor %}
+    {% endif %}
+    <script>
+        $(document).ready(function () {
+            $('.data-table').DataTable({
+                lengthMenu: [[-1, 1, 5, 2000, 5000], ["all", "1", "5", "2000", "5000"]],
+                "pageLength": 20
+            });
+            $("th>a").attr("href", "javascript:;")
+            {#$("th").find("a").attr("href", "javascript:;")#}
+            {#$("th").children("a").attr("href", "javascript:;")#}
+        })
+
+        function show_swal(link) {
+            link = $(link)
+
+            Swal.fire({
+                title: `Are you sure you want to delete ${link.data("title")} ?`,
+                showCancelButton: true,
+                text: "You won't be able to revert this!",
+                confirmButtonText: `<i class="fa fa-trash"></i> Yes Delete`,
+                icon: "warning",
+                showLoaderOnConfirm: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#058908',
+                preConfirm: (login) => {
+                    return fetch(link.data("url"))
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(response.statusText)
+                            }
+                            return response.json()
+                        })
+                        .catch(error => {
+                            Swal.showValidationMessage(
+                                `Request failed: ${error}`
+                            )
+                        })
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    ).then((result) => {
+                        {#console.log("Delete hit")#}
+                        {#window.location.reload()#}
+                        link.closest("tr").remove()
+
+                    })
+
+                }
+            })
+        }
+
+    </script>
+{% endblock %}
